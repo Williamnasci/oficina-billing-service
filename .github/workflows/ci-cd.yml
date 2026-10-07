@@ -48,6 +48,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
+      - name: Normalize image name
+        id: image
+        shell: bash
+        run: echo "name=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
       - uses: docker/login-action@v3
         if: github.event_name != 'pull_request'
         with:
@@ -58,7 +62,7 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ghcr.io/${{ github.repository }}:${{ github.sha }}
+          tags: ${{ steps.image.outputs.name }}:${{ github.sha }}
   deploy:
     name: Kubernetes rollout
     needs: container
@@ -67,6 +71,10 @@ jobs:
     environment: fase4
     steps:
       - uses: actions/checkout@v4
+      - name: Normalize image name
+        id: image
+        shell: bash
+        run: echo "name=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
       - uses: azure/setup-kubectl@v4
       - name: Configure cluster access
         env:
@@ -77,7 +85,7 @@ jobs:
           printf '%s' "$KUBE_CONFIG" > "$HOME/.kube/config"
           chmod 600 "$HOME/.kube/config"
       - run: kubectl apply -k k8s/base
-      - run: kubectl -n oficina-billing set image deployment/oficina-billing-service api=ghcr.io/${{ github.repository }}:${{ github.sha }}
+      - run: kubectl -n oficina-billing set image deployment/oficina-billing-service api=${{ steps.image.outputs.name }}:${{ github.sha }}
       - run: kubectl -n oficina-billing rollout status deployment/oficina-billing-service --timeout=180s
       - name: Validate deployed readiness
         run: |
