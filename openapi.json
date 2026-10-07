@@ -157,6 +157,93 @@
         ]
       }
     },
+    "/service-catalog/{id}": {
+      "get": {
+        "summary": "Consultar catálogo",
+        "responses": {
+          "200": {
+            "description": "Sucesso"
+          },
+          "400": {
+            "description": "Payload inválido"
+          },
+          "401": {
+            "description": "Autenticação inválida"
+          },
+          "403": {
+            "description": "Sem permissão"
+          },
+          "409": {
+            "description": "Conflito de idempotência"
+          },
+          "422": {
+            "description": "Regra de negócio inválida"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "post": {
+        "summary": "Cadastrar/atualizar catálogo",
+        "responses": {
+          "200": {
+            "description": "Sucesso"
+          },
+          "400": {
+            "description": "Payload inválido"
+          },
+          "401": {
+            "description": "Autenticação inválida"
+          },
+          "403": {
+            "description": "Sem permissão"
+          },
+          "409": {
+            "description": "Conflito de idempotência"
+          },
+          "422": {
+            "description": "Regra de negócio inválida"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Catalog"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8
+            }
+          }
+        ]
+      }
+    },
     "/health": {
       "get": {
         "security": [],
@@ -235,6 +322,26 @@
                 "type": "string"
               }
             }
+          }
+        }
+      },
+      "Catalog": {
+        "type": "object",
+        "required": [
+          "name",
+          "unitPriceCents"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "unitPriceCents": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "isActive": {
+            "type": "boolean",
+            "default": true
           }
         }
       }

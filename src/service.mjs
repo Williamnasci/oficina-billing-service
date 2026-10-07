@@ -14,6 +14,14 @@ export class BillingService {
         if (data?.status === 'CANCELLED') return { data }; // cancellation tombstone wins
         if (data) throw new Error('Budget already exists');
         const diagnosis = diagnosisSchema.parse({ diagnosis: event.payload.diagnosis, lines: event.payload.lines });
+        for (const line of diagnosis.lines) {
+          if (line.serviceId) {
+            const catalog = await this.store.get(`catalog:${line.serviceId}`);
+            if (!catalog?.isActive) throw new Error('Catalog service is missing or inactive');
+            line.unitPriceCents = catalog.unitPriceCents;
+            line.description = catalog.name;
+          }
+        }
         const budget = createBudget(event.orderId, diagnosis.lines);
         data = { ...budget, owner: event.payload.owner, customer: event.payload.customer, diagnosis: diagnosis.diagnosis, lines: diagnosis.lines };
         return { data, messages: [message(event, 'billing', 'os', 'QuoteCreated', { amountCents: data.amountCents, currency: data.currency })] };
@@ -43,6 +51,13 @@ export class BillingService {
       return { data: next, messages: [message(event, 'billing', 'os', input === 'APPROVED' ? 'QuoteApproved' : 'QuoteRejected')] };
     });
   }
+  async saveCatalog(id, body, key) {
+    z.string().min(1).max(100).parse(id);
+    const input = z.object({ name: z.string().trim().min(1).max(200), unitPriceCents: z.number().int().positive().max(Number.MAX_SAFE_INTEGER), isActive: z.boolean().default(true) }).strict().parse(body);
+    if (!key || typeof key !== 'string') throw new Error('Idempotency-Key is required');
+    return this.store.transact(`catalog:${id}`, key, fingerprint(input), async () => ({ data: { id, ...input } }));
+  }
+  async getCatalog(id) { const data = await this.store.get(`catalog:${id}`); if (!data) throw new NotFoundError('Catalog service not found'); return data; }
   async webhook(req) {
     const id = req.query['data.id'];
     validateWebhook({ signature: req.headers['x-signature'], requestId: req.headers['x-request-id'], dataId: id, secret: this.webhookSecret });
@@ -79,5 +94,7 @@ export function billingRoutes(service) {
     { method: 'get', path: '/budgets/:id', handle: (req, principal) => service.get(req.params.id, principal) },
     { method: 'post', path: '/budgets/:id/decision', handle: async (req, principal) => (await service.decide(req.params.id, principal, req.body?.decision)).data },
     { method: 'post', path: '/payments/webhook', public: true, handle: req => service.webhook(req) },
+    { method: 'get', path: '/service-catalog/:id', handle: req => service.getCatalog(req.params.id) },
+    { method: 'post', path: '/service-catalog/:id', roles: ['admin', 'operator'], handle: async req => (await service.saveCatalog(req.params.id, req.body, req.headers['idempotency-key'])).data },
   ];
 }

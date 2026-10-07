@@ -59,3 +59,17 @@ test('a second settled payment is refunded without releasing execution twice', a
   const data = await f.store.get('o'); assert.equal(data.paymentId, 'mp-1'); assert.deepEqual(data.excessRefunds, ['mp-2']);
   assert.deepEqual(f.refunds, ['mp-2']); assert.equal(f.store.outbox.filter(e => e.type === 'PaymentApproved').length, 1);
 });
+test('quotes freeze the server catalog price and reject missing/inactive services', async () => {
+  const f = fixture();
+  await assert.rejects(f.service.getCatalog('missing'), /not found/);
+  await assert.rejects(f.service.saveCatalog('filter', { name: 'Filtro', unitPriceCents: 2500 }, ''), /Idempotency/);
+  const routes = billingRoutes(f.service);
+  const req = { params: { id: 'filter' }, body: { name: 'Filtro', unitPriceCents: 2500 }, headers: { 'idempotency-key': 'catalog-v1' } };
+  await routes[4].handle(req, principal); assert.equal((await routes[3].handle(req, principal)).unitPriceCents, 2500);
+  const quoteInput = { ...payload, lines: [{ description: 'Client price', serviceId: 'filter', quantity: 2, unitPriceCents: 1 }] };
+  await f.service.consume(event('CreateQuote', quoteInput));
+  assert.equal((await f.store.get('o')).amountCents, 5000);
+  await f.service.saveCatalog('filter', { name: 'Filtro', unitPriceCents: 9000 }, 'catalog-v2');
+  assert.equal((await f.store.get('o')).amountCents, 5000);
+  const missing = fixture(); await assert.rejects(missing.service.consume(event('CreateQuote', quoteInput)), /missing/);
+});

@@ -42,7 +42,7 @@ Autenticação HS256 compatível com o segredo do emissor da Fase 3. Cliente só
 
 ## Qualidade e evidências
 
-21 testes de domínio, serviço e adapters; cobertura de linhas/branches/funções/statements com gate >=80%. Análise estática bloqueante via ESLint + regras SonarJS, além de TypeScript strict. Adapters HTTP/banco/broker estão incluídos na cobertura; apenas o ponto de composição `src/main.mjs` é excluído e exercitado pelos containers/BDD.
+22 testes de domínio, serviço e adapters; cobertura de linhas/branches/funções/statements com gate >=80%. Análise estática bloqueante via ESLint + regras SonarJS, além de TypeScript strict. Adapters HTTP/banco/broker estão incluídos na cobertura; apenas o ponto de composição `src/main.mjs` é excluído e exercitado pelos containers/BDD.
 
 Relatórios LCOV são gerados em `coverage/lcov.info` e publicados como artifacts no [CI](https://github.com/Williamnasci/oficina-billing-service/actions). Não declarar execução de SonarQube Cloud: a alternativa adotada é SonarJS/ESLint. `sonar-project.properties` prepara integração futura com SonarQube.
 
@@ -50,13 +50,13 @@ Relatórios LCOV são gerados em `coverage/lcov.info` e publicados como artifact
 
 ## CI/CD e infraestrutura própria
 
-[Pipeline](.github/workflows/ci-cd.yml): build, análise estática, coverage, integração, imagem GHCR por SHA e deploy Kubernetes com rollout/readiness. [Dockerfile](Dockerfile) executa como usuário sem privilégios. [Manifestos](k8s/base) incluem namespace próprio, aplicação, banco com PVC e NetworkPolicy.
+[Pipeline](.github/workflows/ci-cd.yml): build, análise estática, coverage, integração, imagem GHCR por SHA e deploy automático em Kubernetes temporário com Kind v0.33.0, rollout/readiness/OpenAPI, sem credencial de nuvem. [Dockerfile](Dockerfile) executa como usuário sem privilégios. [Manifestos](k8s/base) incluem namespace próprio, aplicação, banco com PVC e NetworkPolicy. Há também job de deploy remoto configurável.
 
 Deploy remoto requer `KUBE_CONFIG` no environment `fase4`, Secrets `service-secrets` no namespace e `DEPLOY_ENABLED=true`. Sem essas configurações o job é explicitamente desabilitado, não uma evidência de deploy remoto. Preparar acesso ao pacote GHCR se ele estiver privado. NetworkPolicy só é efetiva em CNI que a implemente; o Kindnet local não é evidência de enforcement.
 
 ## Limites desta implementação
 
-Dados da Fase 3 ainda não foram migrados. Estoque/reservas, catálogo completo, revisão de orçamento e CRUD legado ainda precisam ser extraídos. Não substituir a API antiga sem backfill e testes de regressão. O orçamento atual é manual, com valores de diagnóstico informados por operador autorizado e congelados no Billing.
+Dados da Fase 3 ainda não foram migrados. Estoque/reservas, revisão de orçamento e CRUD legado ainda precisam ser extraídos. Não substituir a API antiga sem backfill e testes de regressão. O orçamento admite serviços do catálogo próprio de Billing (preço canônico substitui valores do solicitante) e linhas manuais de diagnóstico informadas por operador autorizado. Os valores são congelados no orçamento.
 
 ## Mercado Pago
 
