@@ -1,8 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
-import { BillingService, billingRoutes } from '../src/service.mjs';
-import { message } from '../src/infrastructure/contracts.mjs';
+import { BillingService, billingRoutes } from '../dist/service.mjs';
+import { message } from '../dist/infrastructure/contracts.mjs';
 import { MemoryStore } from './helpers.mjs';
 
 const principal = { sub: 'operator', role: 'operator' };

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createBudget, approveBudget, recordPayment, compensateBudget, confirmRefund } from '../src/budget.ts';
+import { createBudget, approveBudget, recordPayment, compensateBudget, confirmRefund } from '../dist/budget.js';
 const quote = () => createBudget('os-1', [{ quantity: 2, unitPriceCents: 1250 }]);
 const verified = { id: 'mp-1', externalReference: 'os-1', amountCents: 2500, currency: 'BRL', status: 'approved' };
 

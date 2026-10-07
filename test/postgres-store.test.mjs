@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { PostgresStore } from '../src/infrastructure/postgres-store.mjs';
+import { PostgresStore } from '../dist/infrastructure/postgres-store.mjs';
 
 function fixture() {
   let data; let hash; const outbox = new Map(); const calls = [];

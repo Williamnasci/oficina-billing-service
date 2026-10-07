@@ -4,6 +4,8 @@
 
 Microsserviço da Fase 4 do Tech Challenge FIAP. Orçamento manual, aprovação, checkout, webhook, conciliação e reembolso Mercado Pago. Banco exclusivo: **PostgreSQL**.
 
+O catálogo foi extraído da aplicação da Fase 3: entidade, DTOs, cinco casos de uso e 14 testes originais. Seu CRUD usa o banco Billing e fornece os preços congelados no orçamento. [Contratos, proveniência, arredondamento e limites da refatoração](docs/refactoring-catalog.md).
+
 ## Serviços e fronteiras
 
 - [OS Service](https://github.com/Williamnasci/oficina-os-service): cliente/veículo, ciclo da OS e coordenação da Saga.

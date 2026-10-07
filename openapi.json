@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Oficina Billing Service",
-    "version": "0.2.0"
+    "version": "0.3.0"
   },
   "servers": [
     {
@@ -17,25 +17,25 @@
   "paths": {
     "/budgets/{id}": {
       "get": {
-        "summary": "Consultar orçamento",
+        "summary": "Consultar orÃ§amento",
         "responses": {
           "200": {
             "description": "Sucesso"
           },
           "400": {
-            "description": "Payload inválido"
+            "description": "Payload invÃ¡lido"
           },
           "401": {
-            "description": "Autenticação inválida"
+            "description": "AutenticaÃ§Ã£o invÃ¡lida"
           },
           "403": {
-            "description": "Sem permissão"
+            "description": "Sem permissÃ£o"
           },
           "409": {
-            "description": "Conflito de idempotência"
+            "description": "Conflito de idempotÃªncia"
           },
           "422": {
-            "description": "Regra de negócio inválida"
+            "description": "Regra de negÃ³cio invÃ¡lida"
           }
         },
         "parameters": [
@@ -58,19 +58,19 @@
             "description": "Sucesso"
           },
           "400": {
-            "description": "Payload inválido"
+            "description": "Payload invÃ¡lido"
           },
           "401": {
-            "description": "Autenticação inválida"
+            "description": "AutenticaÃ§Ã£o invÃ¡lida"
           },
           "403": {
-            "description": "Sem permissão"
+            "description": "Sem permissÃ£o"
           },
           "409": {
-            "description": "Conflito de idempotência"
+            "description": "Conflito de idempotÃªncia"
           },
           "422": {
-            "description": "Regra de negócio inválida"
+            "description": "Regra de negÃ³cio invÃ¡lida"
           }
         },
         "requestBody": {
@@ -103,19 +103,19 @@
             "description": "Sucesso"
           },
           "400": {
-            "description": "Payload inválido"
+            "description": "Payload invÃ¡lido"
           },
           "401": {
-            "description": "Autenticação inválida"
+            "description": "AutenticaÃ§Ã£o invÃ¡lida"
           },
           "403": {
-            "description": "Sem permissão"
+            "description": "Sem permissÃ£o"
           },
           "409": {
-            "description": "Conflito de idempotência"
+            "description": "Conflito de idempotÃªncia"
           },
           "422": {
-            "description": "Regra de negócio inválida"
+            "description": "Regra de negÃ³cio invÃ¡lida"
           }
         },
         "requestBody": {
@@ -159,25 +159,33 @@
     },
     "/service-catalog/{id}": {
       "get": {
-        "summary": "Consultar catálogo",
+        "summary": "GET catálogo (admin)",
+        "description": "Contrato original da Fase 3. Preço em reais com persistência equivalente a Decimal(10,2); DELETE desativa.",
         "responses": {
           "200": {
-            "description": "Sucesso"
+            "description": "Sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceCatalogResponse"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Payload inválido"
+            "description": "DTO inválido"
           },
           "401": {
             "description": "Autenticação inválida"
           },
           "403": {
-            "description": "Sem permissão"
+            "description": "Requer admin"
           },
-          "409": {
-            "description": "Conflito de idempotência"
+          "404": {
+            "description": "Serviço não encontrado"
           },
           "422": {
-            "description": "Regra de negócio inválida"
+            "description": "Regra de domínio inválida"
           }
         },
         "parameters": [
@@ -192,25 +200,25 @@
         ]
       },
       "post": {
-        "summary": "Cadastrar/atualizar catálogo",
+        "summary": "Cadastrar/atualizar catÃ¡logo",
         "responses": {
           "200": {
             "description": "Sucesso"
           },
           "400": {
-            "description": "Payload inválido"
+            "description": "Payload invÃ¡lido"
           },
           "401": {
-            "description": "Autenticação inválida"
+            "description": "AutenticaÃ§Ã£o invÃ¡lida"
           },
           "403": {
-            "description": "Sem permissão"
+            "description": "Sem permissÃ£o"
           },
           "409": {
-            "description": "Conflito de idempotência"
+            "description": "Conflito de idempotÃªncia"
           },
           "422": {
-            "description": "Regra de negócio inválida"
+            "description": "Regra de negÃ³cio invÃ¡lida"
           }
         },
         "requestBody": {
@@ -239,6 +247,84 @@
             "schema": {
               "type": "string",
               "minLength": 8
+            }
+          }
+        ]
+      },
+      "patch": {
+        "summary": "PATCH catálogo (admin)",
+        "description": "Contrato original da Fase 3. Preço em reais com persistência equivalente a Decimal(10,2); DELETE desativa.",
+        "responses": {
+          "204": {
+            "description": "Sucesso"
+          },
+          "400": {
+            "description": "DTO inválido"
+          },
+          "401": {
+            "description": "Autenticação inválida"
+          },
+          "403": {
+            "description": "Requer admin"
+          },
+          "404": {
+            "description": "Serviço não encontrado"
+          },
+          "422": {
+            "description": "Regra de domínio inválida"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServiceCatalogUpdate"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "DELETE catálogo (admin)",
+        "description": "Contrato original da Fase 3. Preço em reais com persistência equivalente a Decimal(10,2); DELETE desativa.",
+        "responses": {
+          "204": {
+            "description": "Sucesso"
+          },
+          "400": {
+            "description": "DTO inválido"
+          },
+          "401": {
+            "description": "Autenticação inválida"
+          },
+          "403": {
+            "description": "Requer admin"
+          },
+          "404": {
+            "description": "Serviço não encontrado"
+          },
+          "422": {
+            "description": "Regra de domínio inválida"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
         ]
@@ -273,6 +359,76 @@
         "responses": {
           "200": {
             "description": "Operacional"
+          }
+        }
+      }
+    },
+    "/service-catalog": {
+      "post": {
+        "summary": "POST catálogo (admin)",
+        "description": "Contrato original da Fase 3. Preço em reais com persistência equivalente a Decimal(10,2); DELETE desativa.",
+        "responses": {
+          "201": {
+            "description": "Sucesso"
+          },
+          "400": {
+            "description": "DTO inválido"
+          },
+          "401": {
+            "description": "Autenticação inválida"
+          },
+          "403": {
+            "description": "Requer admin"
+          },
+          "404": {
+            "description": "Serviço não encontrado"
+          },
+          "422": {
+            "description": "Regra de domínio inválida"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServiceCatalogCreate"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "GET catálogo (admin)",
+        "description": "Contrato original da Fase 3. Preço em reais com persistência equivalente a Decimal(10,2); DELETE desativa.",
+        "responses": {
+          "200": {
+            "description": "Sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ServiceCatalogResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "DTO inválido"
+          },
+          "401": {
+            "description": "Autenticação inválida"
+          },
+          "403": {
+            "description": "Requer admin"
+          },
+          "404": {
+            "description": "Serviço não encontrado"
+          },
+          "422": {
+            "description": "Regra de domínio inválida"
           }
         }
       }
@@ -342,6 +498,87 @@
           "isActive": {
             "type": "boolean",
             "default": true
+          }
+        }
+      },
+      "ServiceCatalogCreate": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "price"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 99999999.99
+          },
+          "isActive": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "ServiceCatalogUpdate": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 99999999.99
+          },
+          "isActive": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "ServiceCatalogResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 99999999.99
+          },
+          "isActive": {
+            "type": "boolean",
+            "default": true
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       }

@@ -31,7 +31,8 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run quality
-      - run: npm run test:cov
+      - name: Native tests and original regression with coverage
+        run: npm run test:cov
       - run: npm run test:integration
       - uses: actions/upload-artifact@v4
         if: always()
