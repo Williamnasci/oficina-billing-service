@@ -4,6 +4,8 @@
 
 Microsserviço da Fase 4 do Tech Challenge FIAP. Orçamento manual, aprovação, checkout, webhook, conciliação e reembolso Mercado Pago. Banco exclusivo: **PostgreSQL**.
 
+O catálogo foi extraído da aplicação da Fase 3: entidade, DTOs, cinco casos de uso e 14 testes originais. Seu CRUD usa o banco Billing e fornece os preços congelados no orçamento. [Contratos, proveniência, arredondamento e limites da refatoração](docs/refactoring-catalog.md).
+
 ## Serviços e fronteiras
 
 - [OS Service](https://github.com/Williamnasci/oficina-os-service): cliente/veículo, ciclo da OS e coordenação da Saga.
@@ -42,7 +44,7 @@ Autenticação HS256 compatível com o segredo do emissor da Fase 3. Cliente só
 
 ## Qualidade e evidências
 
-22 testes de domínio, serviço e adapters; cobertura de linhas/branches/funções/statements com gate >=80%. Análise estática bloqueante via ESLint + regras SonarJS, além de TypeScript strict. Adapters HTTP/banco/broker estão incluídos na cobertura; apenas o ponto de composição `src/main.mjs` é excluído e exercitado pelos containers/BDD.
+25 testes nativos e 14 testes originais do catálogo; cobertura de linhas/branches/funções/statements com gate >=80%. Análise estática bloqueante via ESLint + regras SonarJS, além de TypeScript strict. Adapters HTTP/banco/broker estão incluídos na cobertura; apenas o ponto de composição `src/main.mjs` é excluído e exercitado pelos containers/BDD.
 
 Relatórios LCOV são gerados em `coverage/lcov.info` e publicados como artifacts no [CI](https://github.com/Williamnasci/oficina-billing-service/actions). Não declarar execução de SonarQube Cloud: a alternativa adotada é SonarJS/ESLint. `sonar-project.properties` prepara integração futura com SonarQube.
 

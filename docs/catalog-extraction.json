@@ -1,0 +1,87 @@
+[
+  {
+    "source": "src/modules/service-catalog/application/dto/create-service-catalog.dto.ts",
+    "source_sha256": "848063752d090ab53f8add75a654dc09dc1c163d276644bbe91a34065a2e8dcf",
+    "changes": "ESM import suffixes and explicit jest globals in tests only"
+  },
+  {
+    "source": "src/modules/service-catalog/application/dto/service-catalog-response.dto.ts",
+    "source_sha256": "f4dac1bfc8017ec9a840a5d9e344a59127b5a7f2bfd3031cb9b336eca263d8ce",
+    "changes": "ESM import suffixes and explicit jest globals in tests only"
+  },
+  {
+    "source": "src/modules/service-catalog/application/dto/update-service-catalog.dto.ts",
+    "source_sha256": "5ab469caad0d21c63887c97de9bfc51ab792b72ed830f770c697558a48d03188",
+    "changes": "ESM import suffixes and explicit jest globals in tests only"
+  },
+  {
+    "source": "src/modules/service-catalog/application/use-cases/create-service-catalog.use-case.ts",
+    "source_sha256": "05162fcf5ea1d5df0990cedbf880f74d6749feabd24cca4c6a1fd5c4f3a14354",
+    "changes": "ESM import suffixes and explicit jest globals in tests only"
+  },
+  {
+    "source": "src/modules/service-catalog/application/use-cases/delete-service-catalog.use-case.ts",
+    "source_sha256": "3c722ba646f71b42105e2df6d90b9a3884e71b369780aadfad373b812745955b",
+    "changes": "ESM import suffixes and explicit jest globals in tests only"
+  },
+  {
+    "source": "src/modules/service-catalog/application/use-cases/get-service-catalog.use-case.ts",
+    "source_sha256": "229feeda64eb98e5d424525a8ef2a9dc5a5b8a120a46d4b8b29c9b5079fd3a89",
+    "changes": "ESM import suffixes and explicit jest globals in tests only"
+  },
+  {
+    "source": "src/modules/service-catalog/application/use-cases/list-service-catalog.use-case.ts",
+    "source_sha256": "1f1f4ee1e5f747602dbcef1db4aa0e601f527405b56e247144018214880ca93b",
+    "changes": "ESM import suffixes and explicit jest globals in tests only"
+  },
+  {
+    "source": "src/modules/service-catalog/application/use-cases/update-service-catalog.use-case.ts",
+    "source_sha256": "85f6a734971d1e32264651043f72650629bc722db765a2b2f7aad5a6215a5e90",
+    "changes": "ESM import suffixes and explicit jest globals in tests only"
+  },
+  {
+    "source": "src/modules/service-catalog/domain/entities/service-catalog.entity.ts",
+    "source_sha256": "6688163d22a1c6b10d0030c2abb663b228e16a0fdcc9bcd5208d617f9bd1e089",
+    "changes": "ESM import suffixes and explicit jest globals in tests only"
+  },
+  {
+    "source": "src/modules/service-catalog/domain/repositories/service-catalog.repository.ts",
+    "source_sha256": "1a1d86ccce2c2f3d4b73fe32375a8161e2127d262c46be18267346779f5bde04",
+    "changes": "ESM import suffixes and explicit jest globals in tests only"
+  },
+  {
+    "source": "src/shared/domain/errors/domain.exception.ts",
+    "source_sha256": "4e8556f6e6dba9f013383f4be73962849c95e4f201213073212e7aba4ad14954",
+    "changes": "ESM import suffixes and explicit jest globals in tests only"
+  },
+  {
+    "source": "test/unit/modules/service-catalog/application/use-cases/create-service-catalog.use-case.spec.ts",
+    "source_sha256": "9ca9cb69b611042832bc9ac3388e4102a345b0c99748ce7cca6d42fb5a9f1595",
+    "changes": "ESM import suffixes and explicit jest globals in tests only"
+  },
+  {
+    "source": "test/unit/modules/service-catalog/application/use-cases/delete-service-catalog.use-case.spec.ts",
+    "source_sha256": "a7dd91064dff3bf5ef6315444fb960d79379bf417e58b49fcc92fb5bb9601437",
+    "changes": "ESM import suffixes and explicit jest globals in tests only"
+  },
+  {
+    "source": "test/unit/modules/service-catalog/application/use-cases/get-service-catalog.use-case.spec.ts",
+    "source_sha256": "646c27b484ad73096241fa4e6764747a3052384b419abc1691ec3bd645740c86",
+    "changes": "ESM import suffixes and explicit jest globals in tests only"
+  },
+  {
+    "source": "test/unit/modules/service-catalog/application/use-cases/list-service-catalog.use-case.spec.ts",
+    "source_sha256": "f66593a0410887769ba57b4a38a828af89b9f9e6f613225b0ec345dfb4c7e767",
+    "changes": "ESM import suffixes and explicit jest globals in tests only"
+  },
+  {
+    "source": "test/unit/modules/service-catalog/application/use-cases/update-service-catalog.use-case.spec.ts",
+    "source_sha256": "279633265e403b394a6b2b5fe9abfad7f763cd7725f5963a4fe9880ed13fd822",
+    "changes": "ESM import suffixes and explicit jest globals in tests only"
+  },
+  {
+    "source": "test/unit/modules/service-catalog/domain/entities/service-catalog.entity.spec.ts",
+    "source_sha256": "b9a76a57603c3761a85586be0b55935da44fb5f567be933a8023b9baaebb7410",
+    "changes": "ESM import suffixes and explicit jest globals in tests only"
+  }
+]

@@ -5,6 +5,7 @@ import { createHttp } from './infrastructure/http.mjs';
 import { startWorkers } from './infrastructure/lifecycle.mjs';
 import { BillingService, billingRoutes } from './service.mjs';
 import { MercadoPago } from './mercado-pago.mjs';
+import { CatalogRepository, catalogRoutes } from './catalog.mjs';
 
 const store = new PostgresStore(process.env.DATABASE_URL);
 await store.init();
@@ -13,7 +14,7 @@ const service = new BillingService(store, new MercadoPago({ token: process.env.M
 const broker = new Broker({ url: process.env.AMQP_URL, service: 'billing', store, handle: event => service.consume(event), onDisconnect: () => process.exit(1) });
 await broker.init();
 const spec = JSON.parse(await readFile(new URL('../openapi.json', import.meta.url), 'utf8'));
-const app = await createHttp({ service: 'billing', store, broker, routes: billingRoutes(service), spec, secret: process.env.JWT_SECRET, port: Number(process.env.PORT ?? 3000) });
+const app = await createHttp({ service: 'billing', store, broker, routes: [...billingRoutes(service).filter(route => !(route.method === 'get' && route.path === '/service-catalog/:id')), ...catalogRoutes(new CatalogRepository(store))], spec, secret: process.env.JWT_SECRET, port: Number(process.env.PORT ?? 3000) });
 const stop = startWorkers(broker, service);
 let shuttingDown = false;
 async function shutdown() {

@@ -1,0 +1,45 @@
+name: Distributed BDD
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  distributed-bdd:
+    name: Distributed BDD
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: oficina-billing-service }
+      - uses: actions/checkout@v4
+        with: { repository: Williamnasci/oficina-os-service, path: oficina-os-service }
+      - uses: actions/checkout@v4
+        with: { repository: Williamnasci/oficina-execution-service, path: oficina-execution-service }
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+      - run: npm ci
+        working-directory: oficina-os-service
+      - run: docker compose -f oficina-os-service/bdd/compose.yml up -d --build
+      - name: Wait for all services
+        run: |
+          for port in 18080 18081 18082; do
+            for attempt in $(seq 1 60); do
+              if curl --fail http://localhost:$port/ready; then break; fi
+              sleep 2
+            done
+            curl --fail http://localhost:$port/ready
+          done
+      - run: npm run test:bdd
+        working-directory: oficina-os-service
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: distributed-bdd-results
+          path: oficina-os-service/bdd/results.json
+      - run: docker compose -f oficina-os-service/bdd/compose.yml logs --no-color
+        if: failure()
+      - run: docker compose -f oficina-os-service/bdd/compose.yml down
+        if: always()

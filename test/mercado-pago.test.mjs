@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
-import { MercadoPago, validateWebhook } from '../src/mercado-pago.mjs';
+import { MercadoPago, validateWebhook } from '../dist/mercado-pago.mjs';
 
 test('HMAC validates exact manifest, normalizes IDs, and rejects tampering or replay', () => {
   const secret = 'secret'; const ts = '1704908010'; const requestId = 'req';

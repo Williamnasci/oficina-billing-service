@@ -53,9 +53,9 @@ export class BillingService {
   }
   async saveCatalog(id, body, key) {
     z.string().min(1).max(100).parse(id);
-    const input = z.object({ name: z.string().trim().min(1).max(200), unitPriceCents: z.number().int().positive().max(Number.MAX_SAFE_INTEGER), isActive: z.boolean().default(true) }).strict().parse(body);
+    const input = z.object({ name: z.string().trim().min(1).max(200), unitPriceCents: z.number().int().positive().max(9999999999), isActive: z.boolean().default(true) }).strict().parse(body);
     if (!key || typeof key !== 'string') throw new Error('Idempotency-Key is required');
-    return this.store.transact(`catalog:${id}`, key, fingerprint(input), async () => ({ data: { id, ...input } }));
+    return this.store.transact(`catalog:${id}`, key, fingerprint(input), async existing => ({ data: { ...existing, id, ...input, price: input.unitPriceCents / 100, description: existing?.description ?? null, createdAt: existing?.createdAt ?? new Date().toISOString(), updatedAt: new Date().toISOString() } }));
   }
   async getCatalog(id) { const data = await this.store.get(`catalog:${id}`); if (!data) throw new NotFoundError('Catalog service not found'); return data; }
   async webhook(req) {
