@@ -39,7 +39,7 @@ export class CatalogRepository {
   }
   async findById(id) { const data = await this.store.get(`catalog:${id}`); return data ? this.restore(data) : null; }
   async findAll(onlyActive = false) {
-    return (await this.store.list()).filter(({ id, data }) => id.startsWith('catalog:') && (!onlyActive || data.isActive)).map(({ data }) => this.restore(data)).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    return (await this.store.listCatalog(onlyActive)).map(({ data }) => this.restore(data));
   }
   async update(service) {
     const next = dataOf(service);
