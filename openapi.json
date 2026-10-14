@@ -17,25 +17,25 @@
   "paths": {
     "/budgets/{id}": {
       "get": {
-        "summary": "Consultar orÃ§amento",
+        "summary": "Consultar orçamento",
         "responses": {
           "200": {
             "description": "Sucesso"
           },
           "400": {
-            "description": "Payload invÃ¡lido"
+            "description": "Payload inválido"
           },
           "401": {
-            "description": "AutenticaÃ§Ã£o invÃ¡lida"
+            "description": "Autenticação inválida"
           },
           "403": {
-            "description": "Sem permissÃ£o"
+            "description": "Sem permissão"
           },
           "409": {
-            "description": "Conflito de idempotÃªncia"
+            "description": "Conflito de idempotência"
           },
           "422": {
-            "description": "Regra de negÃ³cio invÃ¡lida"
+            "description": "Regra de negócio inválida"
           }
         },
         "parameters": [
@@ -58,19 +58,19 @@
             "description": "Sucesso"
           },
           "400": {
-            "description": "Payload invÃ¡lido"
+            "description": "Payload inválido"
           },
           "401": {
-            "description": "AutenticaÃ§Ã£o invÃ¡lida"
+            "description": "Autenticação inválida"
           },
           "403": {
-            "description": "Sem permissÃ£o"
+            "description": "Sem permissão"
           },
           "409": {
-            "description": "Conflito de idempotÃªncia"
+            "description": "Conflito de idempotência"
           },
           "422": {
-            "description": "Regra de negÃ³cio invÃ¡lida"
+            "description": "Regra de negócio inválida"
           }
         },
         "requestBody": {
@@ -103,19 +103,19 @@
             "description": "Sucesso"
           },
           "400": {
-            "description": "Payload invÃ¡lido"
+            "description": "Payload inválido"
           },
           "401": {
-            "description": "AutenticaÃ§Ã£o invÃ¡lida"
+            "description": "Autenticação inválida"
           },
           "403": {
-            "description": "Sem permissÃ£o"
+            "description": "Sem permissão"
           },
           "409": {
-            "description": "Conflito de idempotÃªncia"
+            "description": "Conflito de idempotência"
           },
           "422": {
-            "description": "Regra de negÃ³cio invÃ¡lida"
+            "description": "Regra de negócio inválida"
           }
         },
         "requestBody": {
@@ -200,25 +200,25 @@
         ]
       },
       "post": {
-        "summary": "Cadastrar/atualizar catÃ¡logo",
+        "summary": "Cadastrar/atualizar catálogo",
         "responses": {
           "200": {
             "description": "Sucesso"
           },
           "400": {
-            "description": "Payload invÃ¡lido"
+            "description": "Payload inválido"
           },
           "401": {
-            "description": "AutenticaÃ§Ã£o invÃ¡lida"
+            "description": "Autenticação inválida"
           },
           "403": {
-            "description": "Sem permissÃ£o"
+            "description": "Sem permissão"
           },
           "409": {
-            "description": "Conflito de idempotÃªncia"
+            "description": "Conflito de idempotência"
           },
           "422": {
-            "description": "Regra de negÃ³cio invÃ¡lida"
+            "description": "Regra de negócio inválida"
           }
         },
         "requestBody": {

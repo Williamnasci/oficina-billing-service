@@ -2,7 +2,7 @@
   {
     "source": "src/modules/service-catalog/application/dto/create-service-catalog.dto.ts",
     "source_sha256": "848063752d090ab53f8add75a654dc09dc1c163d276644bbe91a34065a2e8dcf",
-    "changes": "ESM import suffixes and explicit jest globals in tests only"
+    "changes": "ESM import suffixes and explicit jest globals in tests only; Max(99999999.99) and Swagger maximum added after review to align DTO with monetary boundary"
   },
   {
     "source": "src/modules/service-catalog/application/dto/service-catalog-response.dto.ts",
@@ -12,7 +12,7 @@
   {
     "source": "src/modules/service-catalog/application/dto/update-service-catalog.dto.ts",
     "source_sha256": "5ab469caad0d21c63887c97de9bfc51ab792b72ed830f770c697558a48d03188",
-    "changes": "ESM import suffixes and explicit jest globals in tests only"
+    "changes": "ESM import suffixes and explicit jest globals in tests only; Max(99999999.99) and Swagger maximum added after review to align DTO with monetary boundary"
   },
   {
     "source": "src/modules/service-catalog/application/use-cases/create-service-catalog.use-case.ts",

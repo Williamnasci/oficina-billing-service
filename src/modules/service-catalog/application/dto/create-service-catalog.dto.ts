@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsString,
   Min,
+  Max,
 } from 'class-validator';
 
 export class CreateServiceCatalogDto {
@@ -21,9 +22,10 @@ export class CreateServiceCatalogDto {
   @IsString()
   description?: string | null;
 
-  @ApiProperty({ example: 150.0, minimum: 0 })
+  @ApiProperty({ example: 150.0, minimum: 0, maximum: 99999999.99 })
   @IsNumber()
   @Min(0)
+  @Max(99999999.99)
   price: number;
 
   @ApiProperty({ example: true, default: true, required: false })

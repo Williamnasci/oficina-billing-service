@@ -34,3 +34,37 @@ test('real PostgreSQL: original decimal rounding, extracted catalog persists, bu
     assert.equal((await store.pool.query('SELECT count(*)::int AS n FROM outbox WHERE aggregate_id=$1', [orderId + '-inactive'])).rows[0].n, 0);
   } finally { await store.close(); }
 });
+
+test('catalog listing retains over 500 services even when 501 newer budgets fill the aggregate window', { skip: !process.env.TEST_DATABASE_URL }, async () => {
+  const store = new PostgresStore(process.env.TEST_DATABASE_URL); await store.init();
+  try {
+    const prefix = randomUUID(), firstId = prefix + '-first';
+    const repository = new CatalogRepository(store);
+    await repository.create(new ServiceCatalog({ id: firstId, name: 'Old catalog entry', price: 10, createdAt: new Date('2019-01-01T00:00:00Z') }));
+    await store.pool.query(`INSERT INTO aggregates(id,version,data,updated_at)
+      SELECT 'catalog:' || $1 || '-item-' || n,0,jsonb_build_object('id',$1 || '-item-' || n,'name','Regression item','unitPriceCents',100,'isActive',n % 2 = 0,'createdAt','2020-01-01T00:00:00.000Z'),now()
+      FROM generate_series(1,501) AS n`, [prefix]);
+    await store.pool.query(`INSERT INTO aggregates(id,version,data,updated_at)
+      SELECT $1 || '-budget-' || n,0,jsonb_build_object('orderId',$1 || '-budget-' || n,'status','WAITING_APPROVAL'),now() + interval '2 minutes'
+      FROM generate_series(1,501) AS n`, [prefix]);
+    assert.ok(!(await store.list()).some(row => row.id === 'catalog:' + firstId));
+    const all = (await repository.findAll()).filter(row => row.id.startsWith(prefix));
+    const active = (await repository.findAll(true)).filter(row => row.id.startsWith(prefix));
+    assert.equal(all.length, 502); assert.equal(active.length, 251);
+    assert.equal(all.at(-1).id, firstId); assert.ok(active.every(row => row.isActive));
+  } finally { await store.close(); }
+});
+
+test('zero-total quote is rejected atomically without checkout, budget or Saga output', { skip: !process.env.TEST_DATABASE_URL }, async () => {
+  const store = new PostgresStore(process.env.TEST_DATABASE_URL); await store.init();
+  try {
+    const serviceId = randomUUID(), orderId = randomUUID();
+    await new CatalogRepository(store).create(new ServiceCatalog({ id: serviceId, name: 'Warranty', price: 0 }));
+    const billing = new BillingService(store, { checkout: () => { throw new Error('Checkout must not run'); } });
+    const event = message({ id: randomUUID(), orderId }, 'os', 'billing', 'CreateQuote', { owner: 'integration', customer: {}, diagnosis: 'Warranty', lines: [{ serviceId, description: 'Warranty', quantity: 1 }] });
+    await assert.rejects(billing.consume(event), /Invalid quote total/);
+    assert.equal(await store.get(orderId), null);
+    assert.equal((await store.pool.query('SELECT count(*)::int AS n FROM inbox WHERE aggregate_id=$1', [orderId])).rows[0].n, 0);
+    assert.equal((await store.pool.query('SELECT count(*)::int AS n FROM outbox WHERE aggregate_id=$1', [orderId])).rows[0].n, 0);
+  } finally { await store.close(); }
+});

@@ -42,6 +42,8 @@ test('extracted catalog HTTP CRUD and legacy errors use the same source of quote
     const created = await call('/service-catalog', 'POST', { name: ' Oil change ', price: 150, description: null }); assert.equal(created.status, 201);
     const { id } = await created.json(); assert.match(id, /^[\da-f-]{36}$/);
     const found = await (await call(`/service-catalog/${id}`)).json(); assert.equal(found.name, 'Oil change'); assert.equal(found.price, 150); assert.equal(found.description, null);
+    assert.equal((await call('/service-catalog', 'POST', { name: 'Above limit', price: 100000000 })).status, 400);
+    assert.equal((await call(`/service-catalog/${id}`, 'PATCH', { price: 99999999.995 })).status, 400);
     assert.equal((await (await call('/service-catalog')).json()).length, 1);
     for (const invalid of [[], null, { name: 'Test', price: -1 }, { name: 'Test', price: 1, extra: true }]) assert.equal((await call('/service-catalog', 'POST', invalid)).status, 400);
     assert.equal((await call('/service-catalog', 'POST', { name: ' ', price: 1 })).status, 422);
@@ -59,6 +61,7 @@ test('extracted catalog HTTP CRUD and legacy errors use the same source of quote
     await assert.rejects(billing.consume(quote('inactive')), /missing or inactive/);
     assert.equal(await store.get('inactive'), null);
     const denied = await fetch(base + '/service-catalog', { headers: { Authorization: `Bearer ${jwt.sign({ sub: 'operator', role: 'operator' }, secret)}` } }); assert.equal(denied.status, 403);
+    const deniedDetail = await fetch(base + `/service-catalog/${id}`, { headers: { Authorization: `Bearer ${jwt.sign({ sub: 'operator', role: 'operator' }, secret)}` } }); assert.equal(deniedDetail.status, 403);
     await billing.saveCatalog(id, { name: 'Extension', unitPriceCents: 5000, isActive: true }, 'legacy-extension');
     assert.equal((await repository.findById(id)).price, 50); assert.equal((await repository.findById(id)).description, 'New price');
   } finally { await app.close(); }
