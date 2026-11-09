@@ -10,7 +10,7 @@ import { CatalogRepository, catalogRoutes } from './catalog.mjs';
 const store = new PostgresStore(process.env.DATABASE_URL);
 await store.init();
 
-const service = new BillingService(store, new MercadoPago({ token: process.env.MP_ACCESS_TOKEN, notificationUrl: process.env.MP_NOTIFICATION_URL, collectorId: process.env.MP_COLLECTOR_ID, liveMode: process.env.MP_LIVE_MODE === 'true', ...(process.env.APP_ENV === 'test' && process.env.MP_TEST_API_URL ? { baseUrl: process.env.MP_TEST_API_URL } : {}) }), { webhookSecret: process.env.MP_WEBHOOK_SECRET });
+const service = new BillingService(store, new MercadoPago({ token: process.env.MP_ACCESS_TOKEN, notificationUrl: process.env.MP_NOTIFICATION_URL, collectorId: process.env.MP_COLLECTOR_ID, verifySandboxPreference: process.env.APP_ENV === 'test' && process.env.MP_VERIFY_SANDBOX_PREFERENCE === 'true', liveMode: process.env.MP_LIVE_MODE === 'true', ...(process.env.APP_ENV === 'test' && process.env.MP_TEST_API_URL ? { baseUrl: process.env.MP_TEST_API_URL } : {}) }), { webhookSecret: process.env.MP_WEBHOOK_SECRET });
 const broker = new Broker({ url: process.env.AMQP_URL, service: 'billing', store, handle: event => service.consume(event), onDisconnect: () => process.exit(1) });
 await broker.init();
 const spec = JSON.parse(await readFile(new URL('../openapi.json', import.meta.url), 'utf8'));

@@ -33,3 +33,19 @@ test('provider rejects configuration, HTTP errors, invalid amounts and incomplet
   await assert.rejects(provider.payment('1'), /amount/); raw.transaction_amount = 1;
   await assert.rejects(provider.refund({ orderId: 'o', paymentId: '1' }), /not confirmed/);
 });
+
+test('sandbox mode accepts an inconsistent live_mode only for the saved sandbox preference', async () => {
+  const raw = { id: 1, collector_id: 7, live_mode: true, external_reference: 'order-1',
+    order: { id: 'merchant-1' }, transaction_amount: 150, currency_id: 'BRL', status: 'approved' };
+  const merchantOrder = { preference_id: 'pref-1', external_reference: 'order-1', payments: [{ id: 1 }] };
+  const provider = new MercadoPago({ token: 'test', collectorId: '7', verifySandboxPreference: true,
+    fetchImpl: async url => Response.json(url.includes('/merchant_orders/') ? merchantOrder : raw) });
+  const checkout = { preferenceId: 'pref-1', url: 'https://sandbox.mercadopago.com.br/checkout' };
+  assert.equal((await provider.payment('1', () => checkout)).status, 'approved');
+  await assert.rejects(provider.payment('1', () => ({ ...checkout, preferenceId: 'unrelated' })), /environment mismatch/);
+  await assert.rejects(provider.payment('1', () => ({ ...checkout, url: 'https://www.mercadopago.com.br/checkout' })), /environment mismatch/);
+  merchantOrder.payments = [];
+  await assert.rejects(provider.payment('1', () => checkout), /environment mismatch/);
+  provider.verifySandboxPreference = false;
+  await assert.rejects(provider.payment('1', () => checkout), /environment mismatch/);
+});

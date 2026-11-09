@@ -66,7 +66,7 @@ export class BillingService {
     validateWebhook({ signature: req.headers['x-signature'], requestId: req.headers['x-request-id'], dataId: id, secret: this.webhookSecret });
     const body = z.object({ type: z.literal('payment'), data: z.object({ id: z.union([z.string(), z.number()]) }) }).passthrough().parse(req.body);
     if (String(body.data.id).toLowerCase() !== String(id).toLowerCase()) throw new Error('Webhook identity mismatch');
-    const payment = await this.provider.payment(String(id));
+    const payment = await this.provider.payment(String(id), async reference => (await this.store.get(reference))?.checkout);
     if (payment.status !== 'approved') return { received: true };
     const orderId = payment.externalReference;
     if (typeof orderId !== 'string' || !orderId) throw new Error('Unknown payment reference');
