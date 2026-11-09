@@ -47,7 +47,8 @@
               "type": "string"
             }
           }
-        ]
+        ],
+        "description": "Valores em centavos, com subtotal de serviços e peças. Cada peça inclui stockItemId e preço congelado no diagnóstico."
       }
     },
     "/budgets/{id}/decision": {

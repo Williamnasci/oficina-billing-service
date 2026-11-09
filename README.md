@@ -67,3 +67,5 @@ Checkout Pro via Preferences API. Configurar MP_ACCESS_TOKEN, MP_COLLECTOR_ID, M
 Reembolso usa chave estável X-Idempotency-Key e exige confirmação no provedor. Pagamento tardio cancelado e segundo pagamento aprovado são reembolsados sem liberar execução duas vezes. Não há número de cartão em payload/logs.
 
 O perfil local e BDD usam simulador HTTP explícito; sandbox na conta real ainda não foi validado. Overrides de endpoint só são carregados em APP_ENV=test. Fontes: [webhooks](https://www.mercadopago.com.br/developers/pt/docs/checkout-pro-preferences/additional-content/notifications/webhooks), [preferências](https://www.mercadopago.com.br/developers/pt/docs/checkout-pro-preferences/create-payment-preference), [refunds](https://www.mercadopago.com.br/developers/pt/reference/online-payments/checkout-pro-preferences/create-refund/post).
+
+[Atualizações da Fase 4: estoque, orçamento e compatibilidade](docs/phase4-nov09.md).

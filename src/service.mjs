@@ -15,6 +15,7 @@ export class BillingService {
         if (data) throw new Error('Budget already exists');
         const diagnosis = diagnosisSchema.parse({ diagnosis: event.payload.diagnosis, lines: event.payload.lines });
         for (const line of diagnosis.lines) {
+          if (line.serviceId && line.stockItemId) throw new Error('A quote line cannot be both service and stock');
           if (line.serviceId) {
             const catalog = await this.store.get(`catalog:${line.serviceId}`);
             if (!catalog?.isActive) throw new Error('Catalog service is missing or inactive');
@@ -23,8 +24,10 @@ export class BillingService {
           }
         }
         const budget = createBudget(event.orderId, diagnosis.lines);
-        data = { ...budget, owner: event.payload.owner, customer: event.payload.customer, diagnosis: diagnosis.diagnosis, lines: diagnosis.lines };
-        return { data, messages: [message(event, 'billing', 'os', 'QuoteCreated', { amountCents: data.amountCents, currency: data.currency })] };
+        const stockItemsAmountCents = diagnosis.lines.filter(line => line.stockItemId).reduce((sum, line) => sum + line.quantity * line.unitPriceCents, 0);
+        const servicesAmountCents = budget.amountCents - stockItemsAmountCents;
+        data = { ...budget, stockItemsAmountCents, servicesAmountCents, owner: event.payload.owner, customer: event.payload.customer, diagnosis: diagnosis.diagnosis, lines: diagnosis.lines };
+        return { data, messages: [message(event, 'billing', 'os', 'QuoteCreated', { amountCents: data.amountCents, currency: data.currency, stockItemsAmountCents, servicesAmountCents, lines: data.lines })] };
       }
       if (event.type === 'CreateCheckout') {
         if (!data) throw new RetryableError('Budget not created yet');
