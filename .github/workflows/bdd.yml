@@ -22,7 +22,11 @@ jobs:
         with: { node-version: 24 }
       - run: npm ci
         working-directory: oficina-os-service
-      - run: docker compose -f oficina-os-service/bdd/compose.yml up -d --build
+      - name: Start distributed services
+        run: |
+          # OS main may still select MongoDB 8, which exits on this runner kernel.
+          printf 'services:\n  mongodb:\n    image: mongo:7.0\n' > "$RUNNER_TEMP/bdd-mongo.yml"
+          docker compose -f oficina-os-service/bdd/compose.yml -f "$RUNNER_TEMP/bdd-mongo.yml" up -d --build
       - name: Wait for all services
         run: |
           for port in 18080 18081 18082; do
