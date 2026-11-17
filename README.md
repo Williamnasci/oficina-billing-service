@@ -44,7 +44,7 @@ Autenticação HS256 compatível com o segredo do emissor da Fase 3. Cliente só
 
 ## Qualidade e evidências
 
-25 testes nativos e 14 testes originais do catálogo; cobertura de linhas/branches/funções/statements com gate >=80%. Análise estática bloqueante via ESLint + regras SonarJS, além de TypeScript strict. Adapters HTTP/banco/broker estão incluídos na cobertura; apenas o ponto de composição `src/main.mjs` é excluído e exercitado pelos containers/BDD.
+26 testes nativos e 14 testes originais do catálogo, além da suíte de integração com PostgreSQL; cobertura de linhas/branches/funções/statements com gate >=80%. Análise estática bloqueante via ESLint + regras SonarJS, além de TypeScript strict. Adapters HTTP/banco/broker estão incluídos na cobertura; apenas o ponto de composição `src/main.mjs` é excluído e exercitado pelos containers/BDD.
 
 Relatórios LCOV são gerados em `coverage/lcov.info` e publicados como artifacts no [CI](https://github.com/Williamnasci/oficina-billing-service/actions). Não declarar execução de SonarQube Cloud: a alternativa adotada é SonarJS/ESLint. `sonar-project.properties` prepara integração futura com SonarQube.
 
@@ -58,7 +58,7 @@ Deploy remoto requer `KUBE_CONFIG` no environment `fase4`, Secrets `service-secr
 
 ## Limites desta implementação
 
-Dados da Fase 3 ainda não foram migrados. Estoque/reservas, revisão de orçamento e CRUD legado ainda precisam ser extraídos. Não substituir a API antiga sem backfill e testes de regressão. O orçamento admite serviços do catálogo próprio de Billing (preço canônico substitui valores do solicitante) e linhas manuais de diagnóstico informadas por operador autorizado. Os valores são congelados no orçamento.
+O orçamento congela o preço canônico dos serviços e o preço das peças capturado na reserva. O total de serviços e o total de peças são calculados separadamente em centavos. As ferramentas de migração estão disponíveis para importar o catálogo do legado com conferência no destino. [Contratos e snapshots da Fase 4](docs/phase4-nov09.md)
 
 ## Mercado Pago
 
@@ -66,6 +66,6 @@ Checkout Pro via Preferences API. Configurar MP_ACCESS_TOKEN, MP_COLLECTOR_ID, M
 
 Reembolso usa chave estável X-Idempotency-Key e exige confirmação no provedor. Pagamento tardio cancelado e segundo pagamento aprovado são reembolsados sem liberar execução duas vezes. Não há número de cartão em payload/logs.
 
-O perfil local e BDD usam simulador HTTP explícito; sandbox na conta real ainda não foi validado. Overrides de endpoint só são carregados em APP_ENV=test. Fontes: [webhooks](https://www.mercadopago.com.br/developers/pt/docs/checkout-pro-preferences/additional-content/notifications/webhooks), [preferências](https://www.mercadopago.com.br/developers/pt/docs/checkout-pro-preferences/create-payment-preference), [refunds](https://www.mercadopago.com.br/developers/pt/reference/online-payments/checkout-pro-preferences/create-refund/post).
+O BDD usa um simulador HTTP local. No Kind, o Checkout Pro oficial em sandbox aprovou um pagamento de teste, o Billing conciliou o valor e a simulação de webhook pelo painel oficial recebeu HTTP 200. MP_VERIFY_SANDBOX_PREFERENCE é usado no perfil de teste para verificar a associação com a preferência salva. Overrides de endpoint exigem APP_ENV=test. Fontes: [webhooks](https://www.mercadopago.com.br/developers/pt/docs/checkout-pro-preferences/additional-content/notifications/webhooks), [preferências](https://www.mercadopago.com.br/developers/pt/docs/checkout-pro-preferences/create-payment-preference), [refunds](https://www.mercadopago.com.br/developers/pt/reference/online-payments/checkout-pro-preferences/create-refund/post).
 
 [Atualizações da Fase 4: estoque, orçamento e compatibilidade](docs/phase4-nov09.md).
